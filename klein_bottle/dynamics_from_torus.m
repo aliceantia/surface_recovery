@@ -49,18 +49,18 @@ end
 
 %% Compare PH of the original samples to PH of the embedding
 Y = getPCA(Psi);
-% DPsi = getSSM(Psi);
-% IsPsi = ripserDM(DPsi, 2, 2);
-% 
-% subplot(221);
-% plotDGM(IsPsi{2});
-% title('H1 Psi');x
-% 
-% subplot(223);
-% plotDGM(IsPsi{3});
-% title('H2 Psi');
+DPsi = getSSM(Psi);
+IsPsi = ripserDM(DPsi, 2, 2);
 
-%subplot(222);
+subplot(221);
+plotDGM(IsPsi{2});
+title('H1 Psi');x
+
+subplot(223);
+plotDGM(IsPsi{3});
+title('H2 Psi');
+
+subplot(222);
 plot3(Y(:, 1), Y(:, 2), Y(:, 3), '.');
 plotTimeColors(1:size(Y, 1), Y, 'type', '3DPC');
 axis equal;
