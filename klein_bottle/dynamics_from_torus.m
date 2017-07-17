@@ -4,18 +4,22 @@ addpath('../matlab_code/TDETools');
 
 %% Define system
 
-dTheta = 0.01;
-dPhi = 0.01;
+dTheta = 0.02;
+dPhi =sqrt(2);
 
 %Move around torus
 psi = @(theta, phi) [mod(theta + dTheta, 1), mod(phi + dPhi, 1)];  
 
-%Define observation function as distance to some arbitrary point (theta0, phi0)
-theta0 = 0;
-phi0 = 0;
+%Define observation function as distance to some arbitrary point (theta0,
+%phi0)
+%modify to be distance along a klein bottle
+theta0 = 1;
+phi0 = 2;
 obsfn = @(theta, phi) ...
-    min(abs(theta - theta0), 1 - abs(theta - theta0)) ...
-    + min(abs(phi - phi0), 1 - abs(phi - phi0));
+    min(abs(theta - theta0) + abs(phi - phi0), ...
+    1 - abs(theta - theta0) + 1 - abs(phi - phi0))
+    %min(abs(theta - theta0), 1 - abs(theta - theta0)) ...
+    %+ min(abs(phi - phi0), 1 - abs(phi - phi0));
 
 
 %% Run dynamics from a bunch of seed points
@@ -56,8 +60,8 @@ Y = getPCA(Psi);
 % plotDGM(IsPsi{3});
 % title('H2 Psi');
 
-% subplot(222);
-%plot3(Y(:, 1), Y(:, 2), Y(:, 3), '.');
+%subplot(222);
+plot3(Y(:, 1), Y(:, 2), Y(:, 3), '.');
 plotTimeColors(1:size(Y, 1), Y, 'type', '3DPC');
 axis equal;
 title('PCA Psi');
