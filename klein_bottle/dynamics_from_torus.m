@@ -1,6 +1,6 @@
-addpath('../GeometryTools');
-addpath('../ripser');
-addpath('../TDETools');
+addpath('../matlab_code/GeometryTools');
+addpath('../matlab_code/ripser');
+addpath('../matlab_code/TDETools');
 
 %% Define system
 
