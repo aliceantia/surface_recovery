@@ -14,7 +14,7 @@ obsfn = @(theta, phi) abs(sum(sphere2xyz(theta0, phi0).*sphere2xyz(theta, phi)))
 %Fill out a spiral trajectory on the sphere
 NTotal = 840;
 NPeriods = 30;
-phis = linspace(-pi/2, pi/2, NTotal);
+phis = linspace(-pi/5, pi/5, NTotal);
 thetas = linspace(0, 2*pi*NPeriods, NTotal);
 
 %Apply observation function to trajectory points to get a time series x
@@ -48,7 +48,6 @@ subplot(222);
 Y = Y(:, 1:3); %Go down to 3D PCA
 C = C(1:size(Y, 1), :);
 scatter3(Y(:, 1), Y(:, 2), Y(:, 3), 20, C(:, 1:3), 'fill');
-
 title('PCA Phi');
 
 subplot(223);
