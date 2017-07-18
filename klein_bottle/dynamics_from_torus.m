@@ -4,7 +4,7 @@ addpath('../matlab_code/TDETools');
 
 %% Define system
 
-dTheta = 0.02;
+dTheta = sqrt(3);
 dPhi =sqrt(2);
 
 %Move around torus
@@ -12,14 +12,47 @@ psi = @(theta, phi) [mod(theta + dTheta, 1), mod(phi + dPhi, 1)];
 
 %Define observation function as distance to some arbitrary point (theta0,
 %phi0)
-%modify to be distance along a klein bottle
-theta0 = 1;
-phi0 = 2;
-obsfn = @(theta, phi) ...
-    min(abs(theta - theta0) + abs(phi - phi0), ...
-    1 - abs(theta - theta0) + 1 - abs(phi - phi0))
-    %min(abs(theta - theta0), 1 - abs(theta - theta0)) ...
-    %+ min(abs(phi - phi0), 1 - abs(phi - phi0));
+theta0 = .3;
+phi0 = .6;
+obsfnTorus = @(theta, phi) ...
+        min(abs(theta - theta0), 1- abs(theta - theta0)) + ...
+        min(abs(phi - phi0), 1-abs(theta - theta0));
+    
+%modify to be distance along a klein bottle by taking min of distance for
+%torus and half torus
+obsfnMin = @(theta, phi) ...
+        min([abs(theta - theta0) + abs(phi - phi0), ...
+        abs(theta - theta0) + (1 - abs(phi - phi0)),  ...
+        (1 - abs(theta - theta0)) +  abs(phi - (1 - phi0)),...
+        (1 - abs(theta - theta0)) +  (1-abs(phi - (1 - phi0)))]);
+%         abs(theta - theta0) + abs(phi - (0.5 - phi0)), ...
+%         abs(theta - theta0) + (1-abs(phi - (0.5 - phi0))),  ...
+%         (1 - abs(theta - theta0)) +  abs(phi - phi0),...
+%         (1 - abs(theta - theta0)) +  (1 - abs(phi - phi0))]);
+
+obsfnMin2 = @(theta, phi) ...
+        min(min(abs(theta - theta0), (1 - abs(theta - theta0))) +...
+            min(abs(phi - phi0), (1 - abs(phi - phi0))),  ...
+            min(abs(theta - theta0), (1 - abs(theta - theta0))) +...
+            min(abs(phi - (1 - phi0)), (1-abs(phi - (1 - phi0)))));
+
+%modify to be distance along a klein bottle by taking two points that are
+%identified on torus an finding min distance to both
+% theta1 = theta0;
+% phi1=1-phi0;
+% obsfnMinPoints = @(theta, phi) ...
+%         min([obsfnTorus(theta, phi), obsfnTorus(theta, phi)]);
+ 
+
+%modify to be distance along a klein bottle by taking two points min of two
+%torus distances
+
+obsfnMin3 = @(theta, phi) ...
+        min([obsfnTorus(theta, phi), obsfnTorus(mod(theta + 1/2, 1), 1-phi)]);
+
+
+%Choose obsfn
+obsfn = obsfnMin2;
 
 
 %% Run dynamics from a bunch of seed points
@@ -50,11 +83,11 @@ end
 %% Compare PH of the original samples to PH of the embedding
 Y = getPCA(Psi);
 DPsi = getSSM(Psi);
-IsPsi = ripserDM(DPsi, 2, 2);
+IsPsi = ripserDM(DPsi, 3, 2);
 
 subplot(221);
 plotDGM(IsPsi{2});
-title('H1 Psi');x
+title('H1 Psi');
 
 subplot(223);
 plotDGM(IsPsi{3});
