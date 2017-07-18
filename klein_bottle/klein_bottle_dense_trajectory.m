@@ -4,9 +4,9 @@ addpath('../matlab_code/TDETools');
 
 %% Define system
 
-d = 10000;
-dTheta = sqrt(5)/10;
-height = 1;
+d = 5000;
+dTheta = sqrt(5);
+height = 2;
 dy = 2*height/d;
 
 %dynamics
@@ -14,7 +14,7 @@ psi = @(theta, y) [mod(theta + dTheta, 1), y + dy];
 
 %change this
 theta0 = .5;
-y0 = 0.2;
+y0 = height/2;
 
 g = @(theta, y) abs(y - y0) + min(abs(theta - theta0), 1 - abs(theta - theta0));
 
@@ -45,7 +45,7 @@ Psi = getGreedyPerm(Psi, 400);
 
 %% Compare PH of the original samples to PH of the embedding
 DPsi = getSSM(Psi);
-IsPsi = ripserDM(DPsi, 2, 2);
+IsPsi = ripserDM(DPsi, 3, 2);
 
 clf;
 
