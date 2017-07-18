@@ -13,7 +13,7 @@ psi = @(theta, phi) [mod(theta + dTheta, 1), mod(phi + dPhi, 1)];
 %Define observation function as distance to some arbitrary point (theta0,
 %phi0)
 %modify to be distance along a klein bottle
-theta0 = 0.1;
+theta0 = 0.3;
 phi0 = 0.2;
 g = @(theta, phi) ...
     min(abs(theta - theta0), 1 - abs(theta - theta0)) +...

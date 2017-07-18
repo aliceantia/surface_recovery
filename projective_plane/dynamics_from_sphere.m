@@ -12,9 +12,9 @@ phi0 = 0.3;
 obsfn = @(theta, phi) abs(sum(sphere2xyz(theta0, phi0).*sphere2xyz(theta, phi)));
 
 %Fill out a spiral trajectory on the sphere
-NTotal = 840;
+NTotal = 600;
 NPeriods = 30;
-phis = linspace(-pi/5, pi/5, NTotal);
+phis = linspace(-pi/2, 0 , NTotal);
 thetas = linspace(0, 2*pi*NPeriods, NTotal);
 
 %Apply observation function to trajectory points to get a time series x
@@ -25,35 +25,43 @@ for ii = 1:NTotal
     X(ii, :) = sphere2xyz(thetas(ii), phis(ii));
 end
 
-plot3(X(:, 1), X(:, 2), X(:, 3));
-
 
 %% Perform Sliding Window Embedding
 X = getSlidingWindowNoInterp(x, NTotal/NPeriods);
 Y = getPCA(X); %Perform PCA on sliding window embedding
-X = getGreedyPerm(X, 400); % fps on embedding point cloud
+X = getGreedyPerm(X, 300); % fps on embedding point cloud
 
 %% Compute PH of the embedding
 
-disp('Doing TDA...');
+disp('Doing TDA (mod 2)...');
 DX = getSSM(X);
-IsSliding = ripserDM(DX, 2, 2);
+IsSliding2 = ripserDM(DX, 2, 2);
+disp('Doing TDA (mod 3)...');
+IsSliding3 = ripserDM(DX, 3, 2);
 
 clf;
-subplot(221);
+subplot(321);
 C = plotTimeColors(1:length(x), x, 'type', '2DLine');
 title('SSM Original');
 
-subplot(222);
+subplot(322);
 Y = Y(:, 1:3); %Go down to 3D PCA
 C = C(1:size(Y, 1), :);
 scatter3(Y(:, 1), Y(:, 2), Y(:, 3), 20, C(:, 1:3), 'fill');
 title('PCA Phi');
 
-subplot(223);
-plotDGM(IsSliding{2});
-title('H1 Phi');
+subplot(323);
+plotDGM(IsSliding2{2});
+title('H1 Phi (mod 2)');
 
-subplot(224);
-plotDGM(IsSliding{3});
-title('H2 Phi');
+subplot(324);
+plotDGM(IsSliding2{3});
+title('H2 Phi (mod 2)');
+
+subplot(325);
+plotDGM(IsSliding3{2});
+title('H1 Phi (mod 3)');
+
+subplot(326);
+plotDGM(IsSliding3{3});
+title('H2 Phi (mod 3)');
