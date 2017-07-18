@@ -4,40 +4,40 @@ addpath('../matlab_code/TDETools');
 
 %% Define system
 
-dTheta = sqrt(2);
-dPhi = sqrt(5);
+d = 10000;
+dTheta = sqrt(5)/10;
+height = 1;
+dy = 2*height/d;
 
-%Move around torus
-psi = @(theta, phi) [mod(theta + dTheta, 1), mod(phi + dPhi, 1)];  
+%dynamics
+psi = @(theta, y) [mod(theta + dTheta, 1), y + dy];
 
-%Define observation function as distance to some arbitrary point (theta0,
-%phi0)
-%modify to be distance along a klein bottle
-theta0 = 0.3;
-phi0 = 0.2;
-g = @(theta, phi) ...
-    min(abs(theta - theta0), 1 - abs(theta - theta0)) +...
-    min(abs(phi - phi0), 1 - abs(phi - phi0));
+%change this
+theta0 = .5;
+y0 = 0.2;
 
-obsfn = @(theta,phi) g(theta, phi)*g(mod(theta + 1/2, 1), mod(-phi,1));
+g = @(theta, y) abs(y - y0) + min(abs(theta - theta0), 1 - abs(theta - theta0));
 
-d = 3000; %number of iterations of dynamics
+obsfn = @(theta, y) min(g(theta, y), g(mod(-theta, 1), sign(y)*height + abs(sign(y)*));
+
+
+ %number of iterations of dynamics
 
 Z = zeros(2,d+1);
 Psi = zeros(1,d+1);
 thetacurr = 0;
-phicurr = 0;
+ycurr = -height;
 for ii = 1:d+1
     Z(1,ii) = thetacurr;
-    Z(2,ii) = phicurr;
-    Psi(ii) = obsfn(thetacurr, phicurr);
-    res = psi(thetacurr, phicurr); %Iterate
+    Z(2,ii) = ycurr;
+    Psi(ii) = obsfn(thetacurr, ycurr);
+    res = psi(thetacurr, ycurr); %Iterate
     thetacurr = res(1);
-    phicurr = res(2);
+    ycurr = res(2);
 end
 
-dim = 6;
-Tau = 2;
+dim = 20;
+Tau = 1;
 dT = 1;
 Psi = getSlidingWindow(Psi, dim, Tau, dT);
 Y = getPCA(Psi);
@@ -45,7 +45,7 @@ Psi = getGreedyPerm(Psi, 400);
 
 %% Compare PH of the original samples to PH of the embedding
 DPsi = getSSM(Psi);
-IsPsi = ripserDM(DPsi, 3, 2);
+IsPsi = ripserDM(DPsi, 2, 2);
 
 clf;
 
