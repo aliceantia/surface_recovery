@@ -18,7 +18,7 @@ y0 = 0.2;
 
 g = @(theta, y) abs(y - y0) + min(abs(theta - theta0), 1 - abs(theta - theta0));
 
-obsfn = @(theta, y) min(g(theta, y), g(mod(theta+.5, 1), sign(y)*height + sign(y)*abs(sign(y)*height-y)));
+obsfn = @(theta, y) min(g(theta, y), g(mod(-theta, 1), sign(y)*height + abs(sign(y)*));
 
 
  %number of iterations of dynamics
