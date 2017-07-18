@@ -1,7 +1,7 @@
 % Sphere dynamics with antipodally symmetric observation function
-addpath('../GeometryTools');
-addpath('../ripser');
-addpath('../TDETools');
+addpath('../matlab_code/GeometryTools');
+addpath('../matlab_code/ripser');
+addpath('../matlab_code/TDETools');
 
 sphere2xyz = @(theta, phi) [cos(theta)*cos(phi), sin(theta)*cos(phi), sin(phi) ];
 
