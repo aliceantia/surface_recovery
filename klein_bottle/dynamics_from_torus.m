@@ -54,7 +54,7 @@ IsPsi = ripserDM(DPsi, 2, 2);
 
 subplot(221);
 plotDGM(IsPsi{2});
-title('H1 Psi');x
+title('H1 Psi');
 
 subplot(223);
 plotDGM(IsPsi{3});
