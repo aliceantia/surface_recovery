@@ -13,13 +13,13 @@ inverse_fatness = 0.2; %(height)
 theta0 = 0.3;
 z0 = 0.3*inverse_fatness;
 
-d_cyl = @(theta, z) min(1- mod(abs(theta - theta0),1), mod(abs(theta-theta0),1))+ abs(z-z0);
+d_cyl = @(theta, z) sqrt(min(1- mod(abs(theta - theta0),1), mod(abs(theta-theta0),1)).^2+ abs(z-z0).^2);
 
 g = @(theta, z) min(d_cyl(theta + 0.5, -z), d_cyl(theta+ 0.5, 2*inverse_fatness- z));
 obsfn = @(theta, z) min(g(theta,z), d_cyl(theta,z));
 
 %Fill out a trajectory on the cylinder
-NTotal = 10000;
+NTotal = 20000;
 NPeriods = 100;
 zs = linspace(0, inverse_fatness , NTotal);
 thetas = linspace(0, NPeriods, NTotal);
@@ -34,7 +34,7 @@ obspt = SW(1,:);
 
 temp = size(SW(:,1));
 M = temp(1);
-y = zeros(M, 1);
+y = zeros(M);
 for ii=1:M
     y(ii) = norm(obspt-SW(ii,:));
 end

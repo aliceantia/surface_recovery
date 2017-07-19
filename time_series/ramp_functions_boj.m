@@ -15,8 +15,6 @@ a = 0; %amplitude of ramp
 %multiply to change amplitude ect
 wave= @(t, a) cos(sqrt(5)*t) + cos(sqrt(2)*t)+a*ramp(t, 1.3*T);
 
-
-
 y=zeros(1, N);
 for ii=1:N
     y(:, ii) = wave(t(1,ii), a);
