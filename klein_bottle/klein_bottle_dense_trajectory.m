@@ -5,7 +5,7 @@ addpath('../matlab_code/TDETools');
 %% Define system
 
 dTheta = sqrt(2);
-dPhi = sqrt(5);
+dPhi = sqrt(5)*dTheta/100;
 
 %Move around torus
 psi = @(theta, phi) [mod(theta + dTheta, 1), mod(phi + dPhi, 1)];  
@@ -37,7 +37,7 @@ for ii = 1:d+1
 end
 
 dim = 6;
-Tau = 2;
+Tau = .01;
 dT = 1;
 Psi = getSlidingWindow(Psi, dim, Tau, dT);
 Y = getPCA(Psi);
