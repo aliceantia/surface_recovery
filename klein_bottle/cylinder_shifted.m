@@ -10,8 +10,8 @@ addpath('../matlab_code/TDETools');
 %Define observation function as distance to some arbitrary point theta0
 inverse_fatness = 0.2; %(height)
     
-theta0 = 0.3;
-z0 = 0.3*inverse_fatness;
+theta0 = 0;
+z0 = 0; %0.3*inverse_fatness;
 
 d_cyl = @(theta, z) min(1- mod(abs(theta - theta0),1), mod(abs(theta-theta0),1))+ abs(z-z0);
 
@@ -24,8 +24,11 @@ zs = linspace(-inverse_fatness, inverse_fatness , NTotal);
 thetas = linspace(0, NPeriods, NTotal);
 
 %Apply observation function to trajectory points to get a time series x
-x = obsfn(thetas, zs);
 
+x = zeros(1,NTotal);
+for ii = 1:NTotal
+    x(ii) = obsfn(thetas(ii), zs(ii));
+end
 
 %% Perform Sliding Window Embedding
 X = getSlidingWindowNoInterp(x, NTotal/NPeriods);
