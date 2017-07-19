@@ -1,29 +1,30 @@
-% Sphere dynamics with antipodally symmetric observation function
+% Sliding window on spiral path down a cylinder with two cross caps
+% We are attempting to recreate the homology of the Klein Bottle,
+% which is equivalent to the connected sum of two projective planes.
+
 addpath('../matlab_code/GeometryTools');
 addpath('../matlab_code/ripser');
 addpath('../matlab_code/TDETools');
 
-sphere2xyz = @(theta, phi) [cos(theta)*cos(phi), sin(theta)*cos(phi), sin(phi) ];
-
 %% Define dynamical system
-%Define observation function as cosine distance to some arbitrary point theta0
-theta0 = 0.6;
-phi0 = 0.3;
-obsfn = @(theta, phi) abs(sum(sphere2xyz(theta0, phi0).*sphere2xyz(theta, phi)));
+%Define observation function as distance to some arbitrary point theta0
+inverse_fatness = 0.2; %(height)
+    
+theta0 = 0.3;
+z0 = 0.3*inverse_fatness;
 
-%Fill out a spiral trajectory on the sphere
-NTotal = 600;
-NPeriods = 30;
-phis = linspace(-pi/2, 0 , NTotal);
-thetas = linspace(0, 2*pi*NPeriods, NTotal);
+d_cyl = @(theta, z) min(1- mod(abs(theta - theta0),1), mod(abs(theta-theta0),1))+ abs(z-z0);
+
+obsfn = @(theta, z) min(min(d_cyl(theta,z), d_cyl(theta + 0.5, -z)), d_cyl(theta+ 0.5, 2*inverse_fatness- z));
+
+%Fill out a trajectory on the cylinder
+NTotal = 10000;
+NPeriods = 100;
+zs = linspace(0, inverse_fatness , NTotal);
+thetas = linspace(0, NPeriods, NTotal);
 
 %Apply observation function to trajectory points to get a time series x
-x = zeros(NTotal, 1);
-X = zeros(NTotal, 3);
-for ii = 1:NTotal
-    x(ii) = obsfn(thetas(ii), phis(ii));
-    X(ii, :) = sphere2xyz(thetas(ii), phis(ii));
-end
+x = obsfn(thetas, zs);
 
 
 %% Perform Sliding Window Embedding

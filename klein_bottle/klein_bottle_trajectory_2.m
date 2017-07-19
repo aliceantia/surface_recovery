@@ -36,10 +36,8 @@ for ii = 1:d+1
     ycurr = res(2);
 end
 
-
 dim = 20;
 Tau = 1;
-
 dT = 1;
 Psi = getSlidingWindow(Psi, dim, Tau, dT);
 Y = getPCA(Psi);
