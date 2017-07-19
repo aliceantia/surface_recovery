@@ -4,22 +4,25 @@ addpath('../matlab_code/TDETools');
 
 %% Define system
 
+dim = 23;
+Tau = 1;
+dT = 1;
+
 d = 10000;
-dTheta = sqrt(5)/10;
-height = 1;
+dTheta = (1/dim)*sqrt(5);
+height = .5;
 dy = 2*height/d;
 
 %dynamics
 psi = @(theta, y) [mod(theta + dTheta, 1), y + dy];
 
 %change this
-theta0 = .5;
-y0 = 0.2;
+theta0 = .3;
+y0 = height*.1;
 
 g = @(theta, y) abs(y - y0) + min(abs(theta - theta0), 1 - abs(theta - theta0));
 
-obsfn = @(theta, y) min(g(theta, y), g(mod(-theta, 1), sign(y)*height + abs(sign(y)*));
-
+obsfn = @(theta, y) min(g(theta, y), g(mod(theta+.5, 1), sign(y)*height + sign(y)*abs(sign(y)*height-y)));
 
  %number of iterations of dynamics
 
@@ -36,12 +39,10 @@ for ii = 1:d+1
     ycurr = res(2);
 end
 
-dim = 20;
-Tau = 1;
-dT = 1;
+
 Psi = getSlidingWindow(Psi, dim, Tau, dT);
 Y = getPCA(Psi);
-Psi = getGreedyPerm(Psi, 400);
+Psi = getGreedyPerm(Psi, 300);
 
 %% Compare PH of the original samples to PH of the embedding
 DPsi = getSSM(Psi);
