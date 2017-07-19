@@ -16,7 +16,7 @@ z0 = 0.3*inverse_fatness;
 d_cyl = @(theta, z) min(1- mod(abs(theta - theta0),1), mod(abs(theta-theta0),1))+ abs(z-z0);
 
 g = @(theta, z) min(d_cyl(theta + 0.5, -z), d_cyl(theta+ 0.5, 2*inverse_fatness- z));
-obsfn = @(theta, z) g(theta,z).*d_cyl(theta,z);
+obsfn = @(theta, z) max(g(theta,z),d_cyl(theta,z));
 
 %Fill out a trajectory on the cylinder
 NTotal = 10000;
