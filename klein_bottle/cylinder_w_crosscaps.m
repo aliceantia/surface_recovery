@@ -8,15 +8,20 @@ addpath('../matlab_code/TDETools');
 
 %% Define dynamical system
 %Define observation function as distance to some arbitrary point theta0
-inverse_fatness = 0.2; %(height)
+inverse_fatness = 0.3; %(height)
     
 theta0 = 0.3;
 z0 = 0.3*inverse_fatness;
 
 d_cyl = @(theta, z) min(1- mod(abs(theta - theta0),1), mod(abs(theta-theta0),1))+ abs(z-z0);
+d_cyl2 = @(theta, z) min(1- mod(abs(theta - theta0 - 0.5),1), mod(abs(theta-theta0-0.5),1))+ abs(z+z0);
+d_cyl3 = @(theta, z) min(1- mod(abs(theta - theta0 - 0.5),1), mod(abs(theta-theta0-0.5),1))+ abs(z- (2*inverse_fatness - z0));
 
-obsfn = @(theta, z) min(min(d_cyl(theta,z), d_cyl(theta + 0.5, -z)), d_cyl(theta+ 0.5, 2*inverse_fatness- z));
+obsfn1 = @(theta, z) min(min(d_cyl(theta,z), d_cyl(theta + 0.5, -z)), d_cyl(theta+ 0.5, 2*inverse_fatness- z));
+obsfn2 = @(theta, z) min(min(d_cyl2(theta,z), d_cyl2(theta + 0.5, -z)), d_cyl2(theta+ 0.5, 2*inverse_fatness- z));
+obsfn3 = @(theta, z) min(min(d_cyl3(theta,z), d_cyl3(theta + 0.5, -z)), d_cyl3(theta+ 0.5, 2*inverse_fatness- z));
 
+obsfn = @(theta,z) min(min(obsfn1(theta,z),obsfn2(theta,z)),obsfn3(theta,z));
 %Fill out a trajectory on the cylinder
 NTotal = 10000;
 NPeriods = 100;
