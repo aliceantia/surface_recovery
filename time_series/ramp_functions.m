@@ -13,7 +13,7 @@ a = 1;
 %here try different ways of incorperating the ramp function 
 %add to change location - seem to make two tori
 %multiply to change amplitude ect
-wave= @(t, a) sin(sqrt(5)*t) + sin(sqrt(2)*t)*ramp(t, 1.3*T);
+wave= @(t, a) sin(sqrt(5)*t) + sin(sqrt(2)*t)+ ramp(t, 1.3*T);
 
 
 
@@ -26,6 +26,7 @@ end
 
 Y = getSlidingWindowNoInterp(y, T);
 Z = getPCA(Y);
+Y = getGreedyPerm(Y, 300);
 
 disp('computing rips mod 2...');
 Is2 = ripserPC(Y, 2, 2);
@@ -45,6 +46,7 @@ title('');
 subplot(222);
 scatter3(Z(:, 1), Z(:, 2), Z(:, 3), 20, C(1:size(Z, 1), 1:3), 'fill');
 title('Sliding Window PCA');
+
 
 subplot(223);
 plotDGM(H1_2);
