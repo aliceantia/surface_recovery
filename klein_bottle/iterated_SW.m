@@ -19,16 +19,20 @@ g = @(theta, z) min(d_cyl(theta + 0.5, -z), d_cyl(theta+ 0.5, 2*inverse_fatness-
 obsfn = @(theta, z) min(g(theta,z), d_cyl(theta,z));
 
 %Fill out a trajectory on the cylinder
-NTotal = 20000;
+NTotal = 10000;
 NPeriods = 100;
-zs = linspace(0, inverse_fatness , NTotal);
 thetas = linspace(0, NPeriods, NTotal);
+zs = linspace(0, inverse_fatness , NTotal);
 
 %Apply observation function to trajectory points to get a time series x
 x = obsfn(thetas, zs);
 
 %% Perform Sliding Window Embedding
-SW = getSlidingWindow(x, NTotal/NPeriods, 1, 1);
+
+dim = 6;
+Tau = 1;
+dT = 1;
+SW = getSlidingWindow(x, dim, Tau, dT);
 
 obspt = SW(1,:);
 
@@ -39,7 +43,7 @@ for ii=1:M
     y(ii) = norm(obspt-SW(ii,:));
 end
 
-X = getSlidingWindow(y, NTotal/NPeriods, 1, M/NTotal);
+X = getSlidingWindow(y, dim, Tau, dT);
 
 Y = getPCA(X); %Perform PCA on sliding window embedding
 X = getGreedyPerm(X, 300); % fps on embedding point cloud
@@ -52,7 +56,7 @@ IsSliding2 = ripserDM(DX, 2, 2);
 disp('Doing TDA (mod 3)...');
 IsSliding3 = ripserDM(DX, 3, 2);
 
-figure(2);
+figure(1);
 clf;
 subplot(321);
 C = plotTimeColors(1:length(y), y, 'type', '2DLine');
