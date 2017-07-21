@@ -47,7 +47,7 @@ temp = size(SW(:,1));
 M = temp(1);
 y = zeros(M);
 for ii=1:M
-    y(ii) = norm(obspt-SW(ii,:));
+    y(ii) = dot(obspt,SW(ii,:));
 end
 
 X = getSlidingWindow(y, dim, Tau, dT);
