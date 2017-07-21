@@ -4,8 +4,8 @@ addpath('../matlab_code/TDETools');
 
 %% Define system
 
-dTheta = sqrt(2);
-dPhi = sqrt(5);
+dTheta = .05;
+dPhi = dTheta/100;
 
 %Move around torus
 psi = @(theta, phi) [mod(theta + dTheta, 1), mod(phi + dPhi, 1)];  
@@ -65,5 +65,6 @@ axis equal;
 title('PCA Psi');
 
 subplot(224);
-scatter(Z(1,:), Z(2, :));
+c= linspace(1,20,length(Z(1,:)));
+scatter(Z(1,:), Z(2, :), [], c);
 title('plot');
