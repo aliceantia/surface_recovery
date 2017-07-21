@@ -28,18 +28,7 @@ thetas = linspace(0, NPeriods, NTotal);
 x = obsfn(thetas, zs);
 
 %% Perform Sliding Window Embedding
-SW = getSlidingWindow(x, NTotal/NPeriods, 1, 1);
-
-obspt = SW(1,:);
-
-temp = size(SW(:,1));
-M = temp(1);
-y = zeros(M, 1);
-for ii=1:M
-    y(ii) = norm(obspt-SW(ii,:));
-end
-
-X = getSlidingWindow(y, NTotal/NPeriods, 1, M/NTotal);
+X = getSlidingWindow(x, NTotal/NPeriods, 1, 1);
 
 Y = getPCA(X); %Perform PCA on sliding window embedding
 X = getGreedyPerm(X, 300); % fps on embedding point cloud
@@ -55,7 +44,7 @@ IsSliding3 = ripserDM(DX, 3, 2);
 figure(2);
 clf;
 subplot(321);
-C = plotTimeColors(1:length(y), y, 'type', '2DLine');
+C = plotTimeColors(1:length(x), x, 'type', '2DLine');
 title('SSM Original');
 
 subplot(322);

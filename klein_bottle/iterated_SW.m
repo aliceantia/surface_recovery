@@ -13,7 +13,7 @@ inverse_fatness = 0.2; %(height)
 theta0 = 0.3;
 z0 = 0.3*inverse_fatness;
 
-d_cyl = @(theta, z) sqrt(min(1- mod(abs(theta - theta0),1), mod(abs(theta-theta0),1)).^2+ abs(z-z0).^2);
+d_cyl = @(theta, z) min(1- mod(abs(theta - theta0),1), mod(abs(theta-theta0),1))+ abs(z-z0);
 
 g = @(theta, z) min(d_cyl(theta + 0.5, -z), d_cyl(theta+ 0.5, 2*inverse_fatness- z));
 obsfn = @(theta, z) min(g(theta,z), d_cyl(theta,z));
@@ -29,21 +29,27 @@ x = obsfn(thetas, zs);
 
 %% Perform Sliding Window Embedding
 
-dim = 6;
+dim = NTotal/NPeriods;
 Tau = 1;
 dT = 1;
-SW = getSlidingWindow(x, dim, Tau, dT);
+X = getSlidingWindow(x, dim, Tau, dT);
 
-obspt = SW(1,:);
+%% iterate SW!!
+% 
+% temp = size(SW(:,1));
+% M = temp(1);
+% 
+% obspt = SW(floor(M/2),:);
+% 
+% y = zeros(M);
+% for ii=1:M
+%     y(ii) = dot(obspt,SW(ii,:));
+% end
+% 
+% X = getSlidingWindow(y, dim, Tau, dT*M/NTotal);
+% x = y;
 
-temp = size(SW(:,1));
-M = temp(1);
-y = zeros(M);
-for ii=1:M
-    y(ii) = norm(obspt-SW(ii,:));
-end
-
-X = getSlidingWindow(y, dim, Tau, dT);
+%% end iterate SW
 
 Y = getPCA(X); %Perform PCA on sliding window embedding
 X = getGreedyPerm(X, 300); % fps on embedding point cloud
@@ -56,10 +62,10 @@ IsSliding2 = ripserDM(DX, 2, 2);
 disp('Doing TDA (mod 3)...');
 IsSliding3 = ripserDM(DX, 3, 2);
 
-figure(1);
+figure(2);
 clf;
 subplot(321);
-C = plotTimeColors(1:length(y), y, 'type', '2DLine');
+C = plotTimeColors(1:length(x), x, 'type', '2DLine');
 title('SSM Original');
 
 subplot(322);
