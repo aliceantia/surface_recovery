@@ -10,14 +10,17 @@ dPhi = sqrt(5);
 %Move around torus
 psi = @(theta, phi) [mod(theta + dTheta, 1), mod(phi + dPhi, 1)];  
 
+
+%define distance function on torus
+dTorus = @(theta1, phi1, theta2, phi2) ...
+    min(abs(theta1 - theta2), 1 - abs(theta1 - theta2)) +...
+    min(abs(phi1 - phi2), 1 - abs(phi1 - phi2));
 %Define observation function as distance to some arbitrary point (theta0,
 %phi0)
-%modify to be distance along a klein bottle
 theta0 = 0.1;
 phi0 = 0.2;
 obsfn = @(theta, phi) ...
-    min(abs(theta - theta0), 1 - abs(theta - theta0)) +...
-    min(abs(phi - phi0), 1 - abs(phi - phi0));
+    dTorus(theta, phi, theta0, phi0);
 
 d = 3000; %number of iterations of dynamics
 
