@@ -25,8 +25,8 @@ SWfT = getSlidingWindow(fT, dim, Tau, dT);
 
 u = SWf(1,:);
 
-f = SWf*u';
-fT = SWfT*u';
+x = SWf*u';
+y = SWfT*u';
 
 ts = min(x,y);
 
