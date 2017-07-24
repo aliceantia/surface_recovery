@@ -9,12 +9,15 @@ sphere2xyz = @(theta, phi) [cos(theta)*cos(phi), sin(theta)*cos(phi), sin(phi) ]
 %Define observation function as cosine distance to some arbitrary point theta0
 theta0 = 0.6;
 phi0 = 0.3;
-obsfn = @(theta, phi) (sum(sphere2xyz(theta0, phi0).*sphere2xyz(theta, phi)));
 
+theta1 = 3;
+phi1 = 0.5;
+
+obsfn = @(theta, phi) sum(sphere2xyz(theta0, phi0).*sphere2xyz(theta, phi));
 %Fill out a spiral trajectory on the sphere
 NTotal = 600;
 NPeriods = 30;
-phis = linspace(-pi/2, 0 , NTotal);
+phis = linspace(-pi/2, pi/2, NTotal);
 thetas = linspace(0, 2*pi*NPeriods, NTotal);
 
 %Apply observation function to trajectory points to get a time series x
@@ -28,6 +31,7 @@ end
 
 %% Perform Sliding Window Embedding
 %preform analysis on original time series
+x = x.^3;
 X = getSlidingWindowNoInterp(x, NTotal/NPeriods);
 Z = getPCA(X); %Perform PCA on sliding window embedding
 Y = getGreedyPerm(X, 300); % fps on embedding point cloud
@@ -42,18 +46,18 @@ Is3 = ripserPC(Y, 3, 2);
 H1_3 = Is3{2};
 H2_3 = Is3{3};
 
-%tansform time series and preform analysis
-Tx=abs(x-0.25);
+%% tansform time series and preform analysis
+Tx=abs(x);
 TX = getSlidingWindowNoInterp(Tx, NTotal/NPeriods);
 TZ = getPCA(TX); %Perform PCA on sliding window embedding
 TY = getGreedyPerm(TX, 300); % fps on embedding point cloud
 
-disp('computing rips mod 2 on original...');
+disp('computing rips mod 2 on transformed...');
 TIs2 = ripserPC(TY, 2, 2);
 TH1_2 = TIs2{2};
 TH2_2 = TIs2{3};
 
-disp('computing rips mod 3 on original ...');
+disp('computing rips mod 3 on transformed ...');
 TIs3 = ripserPC(TY, 3, 2);
 TH1_3 = TIs3{2};
 TH2_3 = TIs3{3};
@@ -61,7 +65,6 @@ TH2_3 = TIs3{3};
 
 %% Plots for original time series
 clf;
-figure
 subplot(241);
 C = plotTimeColors(1:NTotal, x, 'type', '2DLine');
 title('');
