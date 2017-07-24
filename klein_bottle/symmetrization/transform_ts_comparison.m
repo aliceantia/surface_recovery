@@ -4,8 +4,8 @@ addpath('../../matlab_code/TDETools');
 
 %% Define system
 
-dTheta = 1;
-dPhi = 1;
+dTheta = sqrt(2);
+dPhi = sqrt(5);
 
 scale = 1;
 
@@ -47,6 +47,12 @@ gSW = SW*v0';
 gSWT = SWT*v0';
 
 ts = min(gSW,gSWT);
+
+PQ = fft(x); %Power Spectral Density
+% PQ = PQ(1:ceil(length(x)/2));
+
+PH = fft(y); %Power Spectral Density
+% PH = PH(1:ceil(length(y)/2));
 %%
 %% dist from pt
 % gSW = zeros(tslen);
@@ -57,44 +63,43 @@ ts = min(gSW,gSWT);
 %     gSWT(ii) = norm(SWT(ii)-v0);
 % end
 %%
-
-X = getSlidingWindow(ts, dim, Tau, dT*tslen/numIterations);
-Y = getPCA(X);
-X = getGreedyPerm(X, 300);
+% 
+% X = getSlidingWindow(ts, dim, Tau, dT*tslen/numIterations);
+% Y = getPCA(X);
+% X = getGreedyPerm(X, 300);
 
 %% Compute PH of the embedding
 
-disp('Doing TDA (mod 2)...');
-DX = getSSM(X);
-IsSliding2 = ripserDM(DX, 2, 2);
-disp('Doing TDA (mod 3)...');
-IsSliding3 = ripserDM(DX, 3, 2);
+% disp('Doing TDA (mod 2)...');
+% DX = getSSM(X);
+% IsSliding2 = ripserDM(DX, 2, 2);
+% disp('Doing TDA (mod 3)...');
+% IsSliding3 = ripserDM(DX, 3, 2);
+
+figure(1);
+clf;
+
+subplot(221);
+plotTimeColors(1:length(gSW), gSW, 'type', '2DLine');
+title('Original TS');
+
+subplot(222);
+plotTimeColors(1:length(gSWT), gSWT, 'type', '2DLine');
+title('transformed TS');
+
+subplot(223);
+plotTimeColors(1:length(ts), ts, 'type', '2DLine');
+title('symmetrized TS');
 
 figure(2);
 clf;
+plot(PH);
+hold on;
+plot(PQ);
+title('Power Spectral Densities');
+ylabel('Energy (dB)');
+xlabel('Frequency Index');
+legend({'fh', 'fq'});
+set(gcf, 'Position', [0, 0, 600, 400]);
 
-subplot(321);
-C = plotTimeColors(1:length(ts), ts, 'type', '2DLine');
-title('SSM Original');
 
-subplot(322);
-Y = Y(:, 1:3); %Go down to 3D PCA
-C = C(1:size(Y, 1), :);
-scatter3(Y(:, 1), Y(:, 2), Y(:, 3), 20, C(:, 1:3), 'fill');
-title('PCA Phi');
-
-subplot(323);
-plotDGM(IsSliding2{2});
-title('H1 Phi (mod 2)');
-
-subplot(324);
-plotDGM(IsSliding2{3});
-title('H2 Phi (mod 2)');
-
-subplot(325);
-plotDGM(IsSliding3{2});
-title('H1 Phi (mod 3)');
-
-subplot(326);
-plotDGM(IsSliding3{3});
-title('H2 Phi (mod 3)');
