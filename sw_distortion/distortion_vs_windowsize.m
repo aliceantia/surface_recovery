@@ -24,7 +24,7 @@ phi0 = 0.2;
 obsfn = @(theta, phi) ...
     dTorus([theta phi], [theta0 phi0]);
 
-d = 800; %number of iterations of dynamics
+d = 400; %number of iterations of dynamics
 
 Z = zeros(d+1, 2);
 Psi = zeros(1,d+1);
@@ -39,21 +39,22 @@ for ii = 1:d+1
     phicurr = res(2);
 end
 
-dim = 40;
-Tau = 2;
-dT = 1;
-Psi = getSlidingWindowNoInterp(Psi, dim);
+range = 20;
+starting_d = 4;
+distortions = zeros(1,range);
+for ii = 1:range
+    ii
+    Sw = getSlidingWindowNoInterp(Psi, starting_d+ii -1);
+    [SWd, Md] = getDistanceMatrix(Z, Sw, dSphere);
+    distortions(ii) = computeDistortion(Md,SWd);
+end
 
-[SWd, Md] = getDistanceMatrix(Z, Psi, dTorus);
-
-computeDistortion(Md,SWd)
 
 X = unrollDistMat(SWd);
 Y = unrollDistMat(Md);
 
-D = SWd./Md;
-
+d_s = linspace(starting_d, starting_d + range -1, range);
 subplot(121)
-plot(D(~isnan(D)));
+plot(d_s, distortions);
 subplot(122)
 plot(Y,X, '.', 'markersize', 5)
