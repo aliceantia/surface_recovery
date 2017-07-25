@@ -24,7 +24,7 @@ phi0 = 0.2;
 obsfn = @(theta, phi) ...
     dTorus([theta phi], [theta0 phi0]);
 
-d = 500; %number of iterations of dynamics
+d = 800; %number of iterations of dynamics
 
 Z = zeros(d+1, 2);
 Psi = zeros(1,d+1);
@@ -39,7 +39,7 @@ for ii = 1:d+1
     phicurr = res(2);
 end
 
-dim = 4;
+dim = 40;
 Tau = 2;
 dT = 1;
 Psi = getSlidingWindowNoInterp(Psi, dim);
@@ -53,7 +53,7 @@ Y = unrollDistMat(Md);
 
 D = SWd./Md;
 
-subplot(121)
-plot(D(~isnan(D)));
-subplot(122)
-plot(X, Y, '.', 'markersize', 5)
+% subplot(121)
+% plot(D(~isnan(D)));
+% subplot(122)
+% plot(Y,X, '.', 'markersize', 5)
