@@ -9,8 +9,6 @@ dPhi = 1;
 
 scale = 1;
 
-height = .2; %decrease for shallower angle. risky because ripser can't see the identification
-
 numPeriods = 100; %increase for shallower angle
 
 b = 100; %period size. increase for more points
