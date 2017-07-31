@@ -2,9 +2,9 @@
 % We are attempting to recreate the homology of the Klein Bottle,
 % which is equivalent to the connected sum of two projective planes.
 
-addpath('../matlab_code/GeometryTools');
-addpath('../matlab_code/ripser');
-addpath('../matlab_code/TDETools');
+addpath('../../matlab_code/GeometryTools');
+addpath('../../matlab_code/ripser');
+addpath('../../matlab_code/TDETools');
 
 %% Define dynamical system
 %Define observation function as distance to some arbitrary point theta0

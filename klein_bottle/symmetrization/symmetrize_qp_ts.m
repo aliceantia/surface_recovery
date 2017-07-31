@@ -3,7 +3,7 @@ addpath('../../matlab_code/ripser');
 addpath('../../matlab_code/TDETools');
 
 %% Define system
-
+NPeriods = 2;
 T = 10000;
 alpha = 1000;
 beta = 100;
