@@ -5,12 +5,10 @@ addpath('../../matlab_code/TDETools');
 %% Define system
 
 T = 10000;
-alpha = 1000;
-beta = 100;
-t = linspace(0, 2*pi*NPeriods*alpha, T);
+alpha = sqrt(5)/1000;
+t = linspace(0, 2*pi/alpha, T);
 
-f = cos(t/beta) + cos(t/alpha);
-fT = cos(t/beta) - cos(t/alpha);
+f = cos((2+alpha)*t) + cos((2-alpha)*t);
 
 %% observation function
 
@@ -20,15 +18,7 @@ dT = 1;
 
 %% dot product
 
-SWf = getSlidingWindow(f, dim, Tau, dT);
-SWfT = getSlidingWindow(fT, dim, Tau, dT);
-
-u = SWf(1,:);
-
-x = SWf*u';
-y = SWfT*u';
-
-ts = min(x,y);
+X = getSlidingWindow(f, dim, Tau, dT);
 
 X = getSlidingWindow(ts, dim, Tau, dT);
 
