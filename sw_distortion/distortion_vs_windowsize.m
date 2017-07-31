@@ -45,7 +45,7 @@ distortions = zeros(1,range);
 for ii = 1:range
     ii
     Sw = getSlidingWindowNoInterp(Psi, starting_d+ii -1);
-    [SWd, Md] = getDistanceMatrix(Z, Sw, dSphere);
+    [SWd, Md] = getDistanceMatrix(Z, Sw, 'dSphere');
     distortions(ii) = computeDistortion(Md,SWd);
 end
 

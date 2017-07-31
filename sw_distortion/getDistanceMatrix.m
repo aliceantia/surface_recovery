@@ -9,10 +9,12 @@ function [SWd, Md] = getDistanceMatrix(path, SW, dFunction)
     n=length(SW(:,1));
     SWd = zeros(n);
     Md = zeros(n);
+if strcmp(dFunction, 'dSphere')
     for ii= 1:n
         for jj = ii+1:n
             SWd(ii, jj) = sqrt(sum((SW(ii, :) - SW(jj, :)).^2));
-            Md(ii, jj) = dFunction(path(ii, :), path(jj, :));
+            Md(ii, jj) = dSphere(path(ii, :), path(jj, :));
         end
     end
+end
 end
