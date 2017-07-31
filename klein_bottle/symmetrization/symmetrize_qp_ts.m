@@ -3,7 +3,7 @@ addpath('../../matlab_code/ripser');
 addpath('../../matlab_code/TDETools');
 
 %% Define system
-
+NPeriods = 2;
 T = 10000;
 alpha = sqrt(5)/1000;
 t = linspace(0, 2*pi/alpha, T);
