@@ -1,0 +1,33 @@
+addpath('../../matlab_code/GeometryTools');
+addpath('../../matlab_code/ripser');
+addpath('../../matlab_code/TDETools');
+
+%% Define system
+
+
+
+scale = 2*pi;
+
+N = 1000;
+
+thetas = linspace(0, scale, N);
+phis = linspace(0, scale, N);
+
+%% observation point
+% theta0 = 0.3*scale;
+% phi0 = 0.3*height*scale;
+
+theta0 = 0;
+phi0 = 0;
+
+%% observation function
+% g = @(theta, phi) sqrt(min(scale - mod(abs(theta-theta0),scale), mod(abs(theta-theta0),scale)).^2 + min(scale - mod(abs(phi-phi0),scale), mod(abs(phi-phi0),scale)).^2);
+
+[x, y] = meshgrid(thetas,phis);
+
+
+% x = g(thetas, phis);
+% y = g(mod(thetas + scale/2, scale),mod(-phis, scale));
+
+scatter(cos(x)+cos(y),cos(x+pi)+cos(phis));
+
