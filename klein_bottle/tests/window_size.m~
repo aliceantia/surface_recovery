@@ -16,15 +16,14 @@ thetas = linspace(0, scale*numPeriods, numIterations);
 phis = linspace(0, scale*height, numIterations);
 
 
-%% distance on torus and klein
-%  L1
-% dTorusL1 = @(p1, p2) ...
-%     min(abs(p1(1) - p2(1)), scale - abs(p1(1) - p2(1))) ...
-%     + min(abs(p1(2) - p2(2)), scale - abs(p1(2) - p2(2)));
-% 
-% dKleinL1 = @(p1, p2) min(dTorusL1(p1, p2),...
-%     dTorusL1(p1, [mod(p2(1)+scale/2, scale) mod(-p2(2), scale)]));
-% L2 
+%% distance on klein
+dTorusL1 = @(p1, p2) ...
+    min(abs(p1(1) - p2(1)), scale - abs(p1(1) - p2(1))) ...
+    + min(abs(p1(2) - p2(2)), scale - abs(p1(2) - p2(2)));
+
+dKleinL1 = @(p1, p2) min(dTorusL1(p1, p2),...
+    dTorusL1(p1, [mod(p2(1)+scale/2, scale) mod(-p2(2), scale)]));
+% dL2 
 dTorusL2 = @(p1,p2) ...
     sqrt(min(abs(p1(1) - p2(1)), scale - abs(p1(1) - p2(1))).^2 ...
     + min(abs(p1(2) - p2(2)), scale - abs(p1(2) - p2(2))).^2);
@@ -36,7 +35,7 @@ dKleinL2 =  @(p1, p2) min(dTorusL2(p1, p2),...
 theta0 = 0.3*scale;
 phi0 = 0.3*height*scale;
 
-g = @(theta, phi) dKleinL2([theta phi], [theta0 phi0]);
+g = @(theta, phi) dTorusL2([theta phi], [theta0 phi0]);
 
 ts=zeros(1,numIterations);
 
@@ -47,11 +46,11 @@ end
 dim = 2*b;
 Tau = 4;
 dT = 1;
-SW = getSlidingWindow(ts, dim, Tau, dT);
+SW = getSlidingWindow(x, dim, Tau, dT);
 
-Y = getPCA(SW);
+Y = getPCA(X);
 %% Distortion
-[SWd, Md] = getDistanceMatrix([mod(thetas, scale) mod(phis, scale)], SW, @dKleinL1);
+[SWd, Md] = getDistanceMatrix([mod(thetas, scale) mod(phis, scale)], SW, 'dKleinL1');
 toc
 tic
 computeDistortion(Md,SWd)
