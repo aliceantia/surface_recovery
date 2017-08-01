@@ -2,52 +2,50 @@
 % We are attempting to recreate the homology of the Klein Bottle,
 % which is equivalent to the connected sum of two projective planes.
 
-addpath('../../matlab_code/GeometryTools');
-addpath('../../matlab_code/ripser');
-addpath('../../matlab_code/TDETools');
+addpath('../matlab_code/GeometryTools');
+addpath('../matlab_code/ripser');
+addpath('../matlab_code/TDETools');
 
 %% Define dynamical system
 %Define observation function as distance to some arbitrary point theta0
-inverse_fatness = 0.2; %(height)
+width = 1;
+height = 0.2; %(height)
     
-theta0 = 0.3;
-z0 = 0.3*inverse_fatness;
+theta0 = 0.3*width;
+phi0 = 0.3*height;
 
-d_cyl = @(theta, z) min(1- mod(abs(theta - theta0),1), mod(abs(theta-theta0),1))+ abs(z-z0);
+g = @(theta, phi) sqrt(min(width- mod(abs(theta - theta0),width), mod(abs(theta-theta0),width)).^2+ abs(phi-phi0).^2);
 
-g = @(theta, z) min(d_cyl(theta + 0.5, -z), d_cyl(theta+ 0.5, 2*inverse_fatness- z));
-obsfn = @(theta, z) min(g(theta,z), d_cyl(theta,z));
+gK = @(theta, phi) min(g(theta + width/2, -phi), g(theta+ width/2, 2*height- phi));
+obsfn = @(theta, phi) min(g(theta,phi), gK(theta,phi));
 
 %Fill out a trajectory on the cylinder
 NTotal = 10000;
 NPeriods = 100;
-thetas = linspace(0, NPeriods, NTotal);
-zs = linspace(0, inverse_fatness , NTotal);
+thetas = linspace(0, NPeriods*width, NTotal);
+phis = linspace(0, height , NTotal);
 
 %Apply observation function to trajectory points to get a time series x
-x = obsfn(thetas, zs);
+x = obsfn(thetas, phis);
 
 %% Perform Sliding Window Embedding
 
 dim = NTotal/NPeriods;
 Tau = 1;
 dT = 1;
-X = getSlidingWindow(x, dim, Tau, dT);
+SW = getSlidingWindow(x, dim, Tau, dT);
 
 %% iterate SW!!
 
-% temp = size(SW(:,1));
-% M = temp(1);
-% 
-% obspt = SW(floor(M/2),:);
-% 
-% y = zeros(M);
-% for ii=1:M
-%     y(ii) = dot(obspt,SW(ii,:));
-% end
-% 
-% X = getSlidingWindow(y, dim, Tau, dT*M/NTotal);
-% x = y;
+tslen = length(SW(:,1));
+
+obspt = SW(floor(tslen/2),:);
+% obspt = SW(1,:); %doesn't work!
+
+y = SW*obspt';
+
+X = getSlidingWindow(y, dim, Tau, dT*tslen/NTotal);
+x = y;
 
 %% end iterate SW
 
