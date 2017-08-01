@@ -1,11 +1,11 @@
-addpath('../matlab_code/GeometryTools');
-addpath('../matlab_code/ripser');
-addpath('../matlab_code/TDETools');
+addpath('../../matlab_code/GeometryTools');
+addpath('../../matlab_code/ripser');
+addpath('../../matlab_code/TDETools');
 
 %% Define system
 
 dTheta = .05;
-dPhi = dTheta/100;
+dPhi = sqrt(2)*dTheta/100;
 
 %Move around torus
 psi = @(theta, phi) [mod(theta + dTheta, 1), mod(phi + dPhi, 1)];  

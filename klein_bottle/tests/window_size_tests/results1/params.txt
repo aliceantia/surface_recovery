@@ -1,0 +1,16 @@
+params
+scale = 2*pi;
+height = 1/2; 
+numPeriods = 50; 
+b = 50; 
+numIterations = numPeriods*b;
+
+thetas = linspace(0, scale*numPeriods, numIterations);
+phis = linspace(0, scale*height, numIterations);
+
+dKlienL1 as distance
+
+dim = 2*b;
+Tau = tau; noted in matfile name
+dT = 1;
+SW = getSlidingWindow(ts, dim, Tau, dT);
