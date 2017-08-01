@@ -12,9 +12,11 @@ g =  @(x) cos(x);
 obs1 = 1.2;
 obs2 = .9;
 %f = 0.4*(cos((t+05)*(1+alpha)) - cos((t+0.5)*(1-alpha))) + cos(t*(2+alpha)) + cos(t*(2-alpha)) ;
-%f = min(g(alpha*t-obs1)+ g(t-obs2), g(alpha*t - obs1 + pi) + g(-t-obs2));
-f = 0.5 + cos(alpha*t - obs1)*sin(t) + cos(alpha*t - obs).^2 + 0.5*
-\cos \left(nx+1\right)\sin x\ \ +0.5\left(1+\cos \left(nx+1\right)^2\right)+\ 0.5\sin \left(2x-\frac{\pi }{2}\right)\sin \left(\phi \right)+\cos \left(x\right)\cos \left(\phi \right)+\frac{1}{2}\cos \left(nx+1\right)^2\cos \left(2x\right)
+% f = min(g(alpha*t-obs1)+ g(t-obs2), g(alpha*t - obs1 + pi) + g(-t-obs2));
+f = sqrt((g(alpha*t-obs1)+ g(t-obs2)).*(g(alpha*t - obs1 + pi) + g(-t-obs2)));
+
+% f = 0.5 + cos(alpha*t - obs1)*sin(t) + cos(alpha*t - obs).^2 + 0.5*
+% \cos \left(nx+1\right)\sin x\ \ +0.5\left(1+\cos \left(nx+1\right)^2\right)+\ 0.5\sin \left(2x-\frac{\pi }{2}\right)\sin \left(\phi \right)+\cos \left(x\right)\cos \left(\phi \right)+\frac{1}{2}\cos \left(nx+1\right)^2\cos \left(2x\right)
 %% observation function
 
 dim = 100;

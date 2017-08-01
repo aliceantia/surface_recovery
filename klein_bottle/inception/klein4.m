@@ -8,24 +8,25 @@ addpath('../../matlab_code/TDETools');
 
 %% Define dynamical system
 %Define observation function as distance to some arbitrary point theta0
-inverse_fatness = 0.2; %(height)
+width = 1;
+height = 0.2; %(height)
     
-theta0 = 0.3;
-z0 = 0.3*inverse_fatness;
+theta0 = 0.3*width;
+phi0 = 0.3*height;
 
-d_cyl = @(theta, z) min(1- mod(abs(theta - theta0),1), mod(abs(theta-theta0),1))+ abs(z-z0);
+d_cyl = @(theta, phi) min(width- mod(abs(theta - theta0),width), mod(abs(theta-theta0),width))+ abs(phi-phi0);
 
-g = @(theta, z) min(d_cyl(theta + 0.5, -z), d_cyl(theta+ 0.5, 2*inverse_fatness- z));
-obsfn = @(theta, z) min(g(theta,z), d_cyl(theta,z));
+g = @(theta, phi) min(d_cyl(theta + width/2, -phi), d_cyl(theta+ width, 2*height- phi));
+obsfn = @(theta, phi) min(g(theta,phi), d_cyl(theta,phi));
 
 %Fill out a trajectory on the cylinder
 NTotal = 10000;
 NPeriods = 100;
-thetas = linspace(0, NPeriods, NTotal);
-zs = linspace(0, inverse_fatness , NTotal);
+thetas = linspace(0, NPeriods*width, NTotal);
+phis = linspace(0, height , NTotal);
 
 %Apply observation function to trajectory points to get a time series x
-x = obsfn(thetas, zs);
+x = obsfn(thetas, phis);
 
 %% Perform Sliding Window Embedding
 

@@ -1,6 +1,6 @@
-addpath('../matlab_code/GeometryTools');
-addpath('../matlab_code/ripser');
-addpath('../matlab_code/TDETools');
+addpath('../../matlab_code/GeometryTools');
+addpath('../../matlab_code/ripser');
+addpath('../../matlab_code/TDETools');
 
 %% Define system
 
@@ -28,7 +28,7 @@ T = [-1, -1, 1, -1];
 
 %%
 
-g = @(theta, phi) min(1 - mod(theta-theta0,1), mod(theta-theta0,1)) + min(height - mod(phi-phi0,height), mod(phi-phi0,height));
+g = @(theta, phi) min(1 - mod(abs(theta-theta0),1), mod(abs(theta-theta0),1)) + min(height - mod(abs(phi-phi0),height), mod(phi-phi0,height));
 
 % g = @(theta, phi) v0*[cos(theta);sin(theta);cos(phi);sin(phi)];
 
