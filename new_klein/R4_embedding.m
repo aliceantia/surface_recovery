@@ -12,11 +12,6 @@ scale = 2*pi;
 width = 1*scale;
 height = 0.2*scale; %(height)
 
-N = 100;
-terms = (1:N)';
-
-Fx = @(theta) sum(cos(theta.*terms).*(1+(-1).^terms)./(terms.^2));
-Fy = @(phi) sum(cos(phi.*terms)./(terms.^2));
 
 obsfn = @(theta, phi) Fx(theta)+Fy(phi) + Fy(-phi);
 
