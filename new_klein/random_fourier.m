@@ -14,8 +14,8 @@ height = 0.2; %(height)
 N = 100;
 terms = (1:N)';
 
-Fx = @(theta) sum(cos(thetas.*terms).*(1+(-1).^terms)./(terms.^2));
-Fy = @(phi) sum(cos(phis.*terms)./(terms.^2));
+Fx = @(theta) sum(cos(theta.*terms).*(1+(-1).^terms)./(terms.^2));
+Fy = @(phi) sum(cos(phi.*terms)./(terms.^2));
 
 obsfn = @(theta, phi) Fx(theta)+Fy(phi) + Fy(-phi);
 
@@ -34,16 +34,6 @@ dim = NTotal/NPeriods;
 Tau = 1;
 dT = 1;
 X = getSlidingWindow(x, dim, Tau, dT);
-
-%% iterate SW!!
-
-tslen = length(SW(:,1));
-
-obspt = SW(floor(tslen/2),:);
-% obspt = SW(1,:); %doesn't work!
-
-
-%% end iterate SW
 
 Y = getPCA(X); %Perform PCA on sliding window embedding
 X = getGreedyPerm(X, 300); % fps on embedding point cloud
