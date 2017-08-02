@@ -16,10 +16,15 @@ r = 1;
 a = .5; %play with a - determines when kline bottle forms
 %klein bottle a = .4, .5
 
-c1 = rand()+1;
-c2 = rand()+1;
-c3 = rand()+1;
-c4 = rand()+1;
+% c1 = rand()+1;
+% c2 = rand()+1;
+% c3 = rand()+1;
+% c4 = rand()+1;
+
+c1 = 1;
+c2 = 1;
+c3 = 1;
+c4 = 1;
 
 %flat embedding of klein bottle in R4
 obsfn = @(theta, phi) c1.*((r.*cos(phi)+a).*cos(theta))  ...

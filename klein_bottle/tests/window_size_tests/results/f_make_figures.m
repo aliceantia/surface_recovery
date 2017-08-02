@@ -1,5 +1,6 @@
 function []= f_make_figures(tau)
-   load(join(['tau' num2str(tau)]));
+   
+
     clf;
 b=50;    
 dim = 2*b;

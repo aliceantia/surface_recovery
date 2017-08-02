@@ -5,10 +5,17 @@ addpath('../../../matlab_code/samirFunctions');
 addpath('../../../sw_distortion');
 
 
+
+%%
+%Idea as p -> infty min(a,b) = (a+b) - (a^p + b^p)^(1/p)
+p = 30; 
+
+%Idea soft max function set a
+a=-.2;
 %% Define trajectory
 scale = 2*pi; %scale is always 2 pi
 height = 1/2; %decrease for shallower angle. risky because ripser can't see the identification
-numPeriods = 90; %increase for shallower angle
+numPeriods = 50; %increase for shallower angle
 b = 50; %samller period size. increase for more points
 numIterations = numPeriods*b;
 
@@ -16,36 +23,46 @@ thetas = linspace(0, scale*numPeriods, numIterations);
 phis = linspace(0, scale*height, numIterations);
 
 
-%% distance on torus and klein
+%% distance/some function on torus and klein
 %  L1
 dTorusL1 = @(p1, p2) ...
     min(abs(p1(1) - p2(1)), scale - abs(p1(1) - p2(1))) ...
     + min(abs(p1(2) - p2(2)), scale - abs(p1(2) - p2(2)));
 
-dKleinL1 = @(p1, p2) min(dTorusL1(p1, p2),...
-    dTorusL1(p1, [mod(p2(1)+scale/2, scale) mod(-p2(2), scale)]));
+pMinApproxL1= @(p1, p2) dTorusL1(p1, p2) ...
+    + dTorusL1(p1, [mod(p2(1)+scale/2, scale) mod(-p2(2), scale)]) ...
+    - (dTorusL1(p1, p2)^p ...
+            + dTorusL1(p1, [mod(p2(1)+scale/2, scale) mod(-p2(2), scale)])^p)^(1/p);
+        
+softMinApproxL1 = @(p1, p2) (dTorusL1(p1, p2)*exp(-a*dTorusL1(p1, p2)) ...
+    + dTorusL1(p1, [mod(p2(1)+scale/2, scale) mod(-p2(2), scale)]) ...
+    *exp(-a*dTorusL1(p1, [mod(p2(1)+scale/2, scale) mod(-p2(2), scale)]))) ...
+    /(exp(-a*dTorusL1(p1, p2))...
+    + exp(-a*dTorusL1(p1, [mod(p2(1)+scale/2, scale) mod(-p2(2), scale)])));
 % L2 
 dTorusL2 = @(p1,p2) ...
     sqrt(min(abs(p1(1) - p2(1)), scale - abs(p1(1) - p2(1))).^2 ...
     + min(abs(p1(2) - p2(2)), scale - abs(p1(2) - p2(2))).^2);
     
-dKleinL2 =  @(p1, p2) min(dTorusL2(p1, p2),...
-    dTorusL2(p1, [mod(p2(1)+scale/2, scale) mod(-p2(2), scale)]));
-
+pMinApproxL2= @(p1, p2) dTorusL2(p1, p2) ...
+    + dTorusL2(p1, [mod(p2(1)+scale/2, scale) mod(-p2(2), scale)]) ...
+    - (dTorusL2(p1, p2)^p ...
+            + dTorusL2(p1, [mod(p2(1)+scale/2, scale) mod(-p2(2), scale)])^p)^(1/p);
+        
 % cos 
 torusCos = @(p1, p2) ...
     cos(min(abs(p1(1) - p2(1)), scale - abs(p1(1) - p2(1))))...
     + cos(min(abs(p1(2) - p2(2)), scale - abs(p1(2) - p2(2))));
 
-kleinCos = @(p1, p2) min(torusCos(p1, p2),...
-    torusCos(p1, [mod(p2(1)+scale/2, scale) mod(-p2(2), scale)]));
+pMinApproxCos = @(p1, p2) ...
+    cos(min(abs(p1(1) - p2(1)), scale - abs(p1(1) - p2(1))))...
+    + cos(min(abs(p1(2) - p2(2)), scale - abs(p1(2) - p2(2))));
 
 %% observation function
-obsfn = kleinCos; %choose a function
+obsfn = softMinApproxL1; %choose a function
 
-theta0 = 1.1*scale;
-phi0 = 0.9*height*scale;
-
+theta0 = 0.3*scale;
+phi0 = 0.3*height*scale;
 
 g = @(theta, phi) obsfn([theta phi], [theta0 phi0]);
 
@@ -56,7 +73,7 @@ for ii=1:numIterations
 end
 
 dim = 2*b;
-Tau = 1;
+Tau = 4;
 dT = 1;
 SW = getSlidingWindow(ts, dim, Tau, dT);
 
@@ -109,32 +126,3 @@ title('Distortion');
 xlabel('Distance on original surface');
 ylabel('Distance in SW');
 
-%% Notes
-%{
-Parameters that worked for dKleinL1 distance:
-
-scale = 2*pi;
-height = 1/2; 
-numPeriods = 50; 
-b = 50;
-dim = 2*b;
-Tau = 4;
-dT = 1;
-theta0 = 0.3*scale;
-phi0 = 0.3*height*scale;
-numIterations = numPeriods*b;
-
-Parameters that worked for kleinCos obsfn
-
-scale = 2*pi;
-height = 1/2; 
-numPeriods = 90; 
-b = 50;
-dim = 2*b;
-Tau = 1;
-dT = 1;
-theta0 = 1.1*scale;
-phi0 = 0.9*height*scale;
-numIterations = numPeriods*b;
-
-%}
