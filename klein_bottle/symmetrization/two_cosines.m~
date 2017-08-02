@@ -66,4 +66,4 @@ subplot(326);
 plotBarcodes(IsSliding3{3});
 title('H2 Phi (mod 3)');
 
-kleinBottlePersistence(IsSliding2{2},IsSliding2{3},IsSliding3{3});
+fl

@@ -2,8 +2,8 @@ addpath('../matlab_code/GeometryTools');
 addpath('../matlab_code/ripser');
 addpath('../matlab_code/TDETools');
 addpath('../sw_distortion');
-
-N_sampling = 12;
+addpath('../klein_bottle/symmetrization');
+N_sampling = 16;
 phis = linspace(0,pi, N_sampling);
 thetas = linspace(0,2*pi, N_sampling);
 [x,y] = meshgrid(phis,thetas);
@@ -36,3 +36,5 @@ title('H1 Phi (mod 3)');
 subplot(224);
 plotBarcodes(clean_bars(result3{3}, scale),3);
 title('H2 Phi (mod 3)');
+
+kleinBottlePersistence(result2{2},result2{3},result3{3})
