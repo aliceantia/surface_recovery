@@ -1,4 +1,4 @@
-function [] = plotBarcodes( I )
+function [] = plotBarcodes( I, bar_range )
     hold on;
     s = (max(I(:)) - min(I(:)))/size(I, 1);
     for ii = 1:size(I, 1)
@@ -6,6 +6,9 @@ function [] = plotBarcodes( I )
         d = I(ii, 2);
         plot([b, d], [s*ii, s*ii], 'color', 'k');
         scatter([b, d], [s*ii, s*ii], 20, 'k', 'fill');
+    end
+    if nargin == 2
+        xlim([0,bar_range])
     end
 end
 
