@@ -9,11 +9,22 @@ addpath('../matlab_code/TDETools');
 %% Define dynamical system
 %Define observation function as distance to some arbitrary point theta0
 scale = 2*pi;
-width = 1*scale;
-height = 0.2*scale; %(height)
+width = scale;
+height = 0.5*scale; %(height)
 
+r = 1;
+a = .5; %play with a - determines when kline bottle forms
+%klein bottle a = .4, .5
 
-obsfn = @(theta, phi) Fx(theta)+Fy(phi) + Fy(-phi);
+c1 = rand()+1;
+c2 = rand()+1;
+c3 = rand()+1;
+c4 = rand()+1;
+
+%flat embedding of klein bottle in R4
+obsfn = @(theta, phi) c1.*((r.*cos(phi)+a).*cos(theta))  ...
+    + c2.*((r.*cos(phi)+a).*sin(theta)) + c3.*(r.*sin(phi).*cos(theta/2)) ...
+    + c4.*(r.*sin(phi).*sin(theta/2));
 
 %Fill out a trajectory on the cylinder
 NTotal = 10000;
@@ -26,8 +37,8 @@ x = obsfn(thetas, phis);
 
 %% Perform Sliding Window Embedding
 
-dim = NTotal/NPeriods;
-Tau = 1;
+dim = 100;
+Tau = 3;
 dT = 1;
 X = getSlidingWindow(x, dim, Tau, dT);
 
