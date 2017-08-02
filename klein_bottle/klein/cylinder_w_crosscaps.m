@@ -71,3 +71,4 @@ title('H1 Phi (mod 3)');
 subplot(326);
 plotDGM(IsSliding3{3});
 title('H2 Phi (mod 3)');
+

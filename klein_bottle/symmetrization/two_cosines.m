@@ -5,21 +5,21 @@ addpath('../../matlab_code/TDETools');
 %% Define system
 NPeriods = 1;
 T = 10000;
-alpha = 90; % ratio of winding
+alpha = 90+sqrt(2); % ratio of winding
 t = linspace(0, pi, T);
-%g = @(x) -pi/2*cos(x) + pi/2;
+g = @(x) -pi/2*cos(x) + pi/2;
 %g =  @(x) cos(x);
-g = @(x) min(2*pi - abs(mod(x,2*pi)),abs(mod(x,2*pi))); 
+%g = @(x) min(2*pi - abs(mod(x,2*pi)),abs(mod(x,2*pi))); 
 obs1 = 1.2;
 obs2 = .9;
 %f = 0.4*(cos((t+05)*(1+alpha)) - cos((t+0.5)*(1-alpha))) + cos(t*(2+alpha)) + cos(t*(2-alpha)) ;
 % f = min(g(alpha*t-obs1)+ g(t-obs2), g(alpha*t - obs1 + pi) + g(-t-obs2));
 f = min(g(alpha*t-obs1)+ g(t-obs2),g(alpha*t - obs1 + pi) + g(-t-obs2));
-
+%f = g(alpha*t-obs1)+ g(t-obs2);
 %% observation function
 
-dim = 100;
-Tau = 1;
+dim = 130;
+Tau = 3;
 dT = 1;
 
 %% dot product
@@ -66,4 +66,4 @@ subplot(326);
 plotBarcodes(IsSliding3{3});
 title('H2 Phi (mod 3)');
 
-kleinBottlePersistence(IsSliding2{2},IsSliding2{3},IsSliding3{3});
+kleinBottlePersistence(IsSliding2{2},IsSliding2{3},IsSliding3{3})
