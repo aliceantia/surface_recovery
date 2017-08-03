@@ -12,7 +12,7 @@ dim = 2*b;
 Tau = 4;
 dT = 1;
 
-[ts, SWd, Md, IsSliding2, IsSliding3]=f_getData(a);
+[ts, SWd, Md, IsSliding2, IsSliding3]=f_getData(a,15);
 
 computeDistortion(Md,SWd)
 
