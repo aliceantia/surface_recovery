@@ -1,0 +1,23 @@
+params
+
+
+tau = 1:20;
+
+scale = 2*pi;
+height = 1/2; 
+dim = 100;
+numPeriods = 50; 
+b = 100;
+numIterations = numPeriods*b;
+Tau = tau;
+dT = 1;
+theta0 = 0.3*scale;
+phi0 = 0.3*height*scale;
+
+thetas = linspace(0, scale*numPeriods + scale*numPeriods*Tau*dim/numIterations,...
+    numIterations+ (Tau*dim));
+phis = linspace(0, scale*height + scale*height*Tau*dim/numIterations, ...
+    numIterations + (Tau*dim));
+
+obsfn = minL1;
+useDiffusionMap = false;
