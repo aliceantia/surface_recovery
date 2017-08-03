@@ -1,6 +1,11 @@
 %% Alg to detect klein bottle persistence (how long does a klein bottle remain a klein bottle).
 function k = kleinBottlePersistence(H1_Z2, H2_Z2, H2_Z3)
 
+if isempty(H1_Z2)
+    k=0;
+    return
+end
+
 % Get the class in H2 Z2 that persists the longest
 persistences = H2_Z2(:,2) - H2_Z2(:,1);
 [~,I] = max(persistences);

@@ -4,6 +4,8 @@ addpath('../../../matlab_code/TDETools');
 addpath('../../../matlab_code/samirFunctions');
 addpath('../../../sw_distortion');
 
+%load dataset before running this
+
 %check params.txt for these settings
 b=50;
 dim = 2*b;
@@ -11,8 +13,9 @@ Tau = 4;
 dT = 1;
 SW = getSlidingWindow(ts, dim, Tau, dT);
 
+a = -0.1:0.05:1.2;
 
-for ii=1:27
+for ii=1:length(a) %length of run
 ii
 
 ts = softMinApproxResults1{1, ii};
