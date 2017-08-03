@@ -1,0 +1,18 @@
+a = 0:0.05:1.4; %set parameter range
+
+data = cell(5, length(a));
+
+for ii=1:length(a)
+   a(ii)
+   [ts, SWd, Md, IsSliding2, IsSliding3] = f_getData(a(ii));
+   data{1, ii} = ts;
+   data{2, ii} = SWd;
+   data{3, ii} = Md;
+   data{4, ii} = IsSliding2;
+   data{5, ii} = IsSliding3;
+end
+
+softMinApproxResults1 = data; %change this to change name of data set then export 
+%to results and update param.txt
+
+

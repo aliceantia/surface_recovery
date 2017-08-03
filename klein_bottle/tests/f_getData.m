@@ -1,17 +1,8 @@
-addpath('../../matlab_code/GeometryTools');
-addpath('../../matlab_code/ripser');
-addpath('../../matlab_code/TDETools');
-addpath('../../matlab_code/samirFunctions');
-addpath('../../sw_distortion');
-
-
-
-%%
+function [ts, SWd, Md, IsSliding2, IsSliding3] = f_getData(a)
 %Idea as p -> infty min(a,b) = (a+b) - (a^p + b^p)^(1/p)
 p = 30; 
 
 %Idea soft max function set a
-a=5;
 %% Define trajectory
 scale = 2*pi; %scale is always 2 pi
 height = 1/2; %decrease for shallower angle. risky because ripser can't see the identification
@@ -28,9 +19,6 @@ phis = linspace(0, scale*height, numIterations);
 dTorusL1 = @(p1, p2) ...
     min(abs(p1(1) - p2(1)), scale - abs(p1(1) - p2(1))) ...
     + min(abs(p1(2) - p2(2)), scale - abs(p1(2) - p2(2)));
-
-minL1 = @(p1, p2) min(dTorusL1(p1, p2),...
-    dTorusL1(p1, [mod(p2(1)+scale/2, scale) mod(-p2(2), scale)]));
 
 pMinApproxL1= @(p1, p2) dTorusL1(p1, p2) ...
     + dTorusL1(p1, [mod(p2(1)+scale/2, scale) mod(-p2(2), scale)]) ...
@@ -54,20 +42,17 @@ pMinApproxL2= @(p1, p2) dTorusL2(p1, p2) ...
     + dTorusL2(p1, [mod(p2(1)+scale/2, scale) mod(-p2(2), scale)]) ...
     - (dTorusL2(p1, p2)^p ...
             + dTorusL2(p1, [mod(p2(1)+scale/2, scale) mod(-p2(2), scale)])^p)^(1/p);
-
+        
 softMinApproxL2 = @(p1, p2) (dTorusL2(p1, p2)*exp(-a*dTorusL2(p1, p2)) ...
     + dTorusL2(p1, [mod(p2(1)+scale/2, scale) mod(-p2(2), scale)]) ...
     *exp(-a*dTorusL2(p1, [mod(p2(1)+scale/2, scale) mod(-p2(2), scale)]))) ...
     /(exp(-a*dTorusL2(p1, p2))...
     + exp(-a*dTorusL2(p1, [mod(p2(1)+scale/2, scale) mod(-p2(2), scale)])));
-
+        
 % cos 
 torusCos = @(p1, p2) ...
     cos(min(abs(p1(1) - p2(1)), scale - abs(p1(1) - p2(1))))...
     + cos(min(abs(p1(2) - p2(2)), scale - abs(p1(2) - p2(2))));
-
-minCos = @(p1, p2) min(torusCos(p1, p2),...
-    torusCos(p1, [mod(p2(1)+scale/2, scale) mod(-p2(2), scale)]));
 
 softMinApproxCos = @(p1, p2) (torusCos(p1, p2)*exp(-a*torusCos(p1, p2)) ...
     + torusCos(p1, [mod(p2(1)+scale/2, scale) mod(-p2(2), scale)]) ...
@@ -76,7 +61,7 @@ softMinApproxCos = @(p1, p2) (torusCos(p1, p2)*exp(-a*torusCos(p1, p2)) ...
     + exp(-a*torusCos(p1, [mod(p2(1)+scale/2, scale) mod(-p2(2), scale)])));
 
 %% observation function
-obsfn = minCos; %choose a function
+obsfn = softMinApproxL2; %choose a function
 
 theta0 = 0.3*scale;
 phi0 = 0.3*height*scale;
@@ -94,18 +79,10 @@ Tau = 4;
 dT = 1;
 SW = getSlidingWindow(ts, dim, Tau, dT);
 
-Y = getPCA(SW);
 %% Distortion
 path = horzcat(mod(thetas, scale)', mod(phis, scale)');
-tic
 [SWd, Md] = getDistanceMatrix(path, SW, minL2);
-toc
-computeDistortion(Md,SWd)
 
-SWd = unrollDistMat(SWd);
-Md = unrollDistMat(Md);
-
-%D = SWd./Md;
 %% do TDA
 SW = getGreedyPerm(SW, 300);
 disp('Doing TDA (mod 2)...');
@@ -113,34 +90,3 @@ DSW = getSSM(SW);
 IsSliding2 = ripserDM(DSW, 2, 2);
 disp('Doing TDA (mod 3)...');
 IsSliding3 = ripserDM(DSW, 3, 2);
-
-%% Plots
-clf;
-
-subplot(321);
-C = plotTimeColors(1:length(ts), ts, 'type', '2DLine');
-title('SSM Original');
-
-subplot(322);
-Y = Y(:, 1:3); %Go down to 3D PCA
-C = C(1:size(Y, 1), :);
-scatter3(Y(:, 1), Y(:, 2), Y(:, 3), 20, C(:, 1:3), 'fill');
-title('PCA Phi');
-
-subplot(323);
-plotDGM(IsSliding2{2});
-plotDGM(IsSliding2{3}, 'red', 'd');
-title('Z2 Coefficients');
-
-
-subplot(324);
-plotDGM(IsSliding3{2});
-plotDGM(IsSliding3{3}, 'red', 'd');
-title('Z3 Coefficients');
-
-subplot(325)
-scatter(Md, SWd, 2, 'filled');
-title('Distortion');
-xlabel('Distance on original surface');
-ylabel('Distance in SW');
-
