@@ -40,17 +40,25 @@ pMinApproxL2= @(p1, p2) dTorusL2(p1, p2) ...
     - (dTorusL2(p1, p2)^p ...
             + dTorusL2(p1, [mod(p2(1)+scale/2, scale) mod(-p2(2), scale)])^p)^(1/p);
         
+softMinApproxL2 = @(p1, p2) (dTorusL2(p1, p2)*exp(-a*dTorusL2(p1, p2)) ...
+    + dTorusL2(p1, [mod(p2(1)+scale/2, scale) mod(-p2(2), scale)]) ...
+    *exp(-a*dTorusL2(p1, [mod(p2(1)+scale/2, scale) mod(-p2(2), scale)]))) ...
+    /(exp(-a*dTorusL2(p1, p2))...
+    + exp(-a*dTorusL2(p1, [mod(p2(1)+scale/2, scale) mod(-p2(2), scale)])));
+        
 % cos 
 torusCos = @(p1, p2) ...
     cos(min(abs(p1(1) - p2(1)), scale - abs(p1(1) - p2(1))))...
     + cos(min(abs(p1(2) - p2(2)), scale - abs(p1(2) - p2(2))));
 
-pMinApproxCos = @(p1, p2) ...
-    cos(min(abs(p1(1) - p2(1)), scale - abs(p1(1) - p2(1))))...
-    + cos(min(abs(p1(2) - p2(2)), scale - abs(p1(2) - p2(2))));
+softMinApproxCos = @(p1, p2) (torusCos(p1, p2)*exp(-a*torusCos(p1, p2)) ...
+    + torusCos(p1, [mod(p2(1)+scale/2, scale) mod(-p2(2), scale)]) ...
+    *exp(-a*torusCos(p1, [mod(p2(1)+scale/2, scale) mod(-p2(2), scale)]))) ...
+    /(exp(-a*torusCos(p1, p2))...
+    + exp(-a*torusCos(p1, [mod(p2(1)+scale/2, scale) mod(-p2(2), scale)])));
 
 %% observation function
-obsfn = softMinApproxL1; %choose a function
+obsfn = softMinApproxL2; %choose a function
 
 theta0 = 0.3*scale;
 phi0 = 0.3*height*scale;
@@ -68,17 +76,10 @@ Tau = 4;
 dT = 1;
 SW = getSlidingWindow(ts, dim, Tau, dT);
 
-Y = getPCA(SW);
 %% Distortion
 path = horzcat(mod(thetas, scale)', mod(phis, scale)');
 [SWd, Md] = getDistanceMatrix(path, SW, obsfn);
 
-computeDistortion(Md,SWd)
-
-SWd = unrollDistMat(SWd);
-Md = unrollDistMat(Md);
-
-%D = SWd./Md;
 %% do TDA
 SW = getGreedyPerm(SW, 300);
 disp('Doing TDA (mod 2)...');
