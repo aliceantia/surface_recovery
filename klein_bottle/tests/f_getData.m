@@ -6,6 +6,8 @@ p = 30;
 useDiffusionMap = false;
 k=20;
 
+
+greedyPermNumber = 400;
 %% Define trajectory
 scale = 2*pi; %scale is always 2 pi
 height = 1/2; %decrease for shallower angle. risky because ripser can't see the identification
@@ -73,7 +75,7 @@ softMinApproxCos = @(p1, p2) (torusCos(p1, p2)*exp(-a*torusCos(p1, p2)) ...
     + exp(-a*torusCos(p1, [mod(p2(1)+scale/2, scale) mod(-p2(2), scale)])));
 
 %% observation function
-obsfn = minL1; %choose a function
+obsfn = softMinApproxCos; %choose a function
 
 theta0 = 0.3*scale;
 phi0 = 0.3*height*scale;
@@ -96,7 +98,7 @@ path = horzcat(mod(thetas, scale)', mod(phis, scale)');
 if useDiffusionMap
     SW = getDiffusionMap(getSSM(SW), k);
 end
-SW = getGreedyPerm(SW, 300);
+SW = getGreedyPerm(SW, greedyPermNumber);
 disp('Doing TDA (mod 2)...');
 DSW = getSSM(SW);
 IsSliding2 = ripserDM(DSW, 2, 2);
