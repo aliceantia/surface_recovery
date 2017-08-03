@@ -5,8 +5,9 @@ addpath('../../matlab_code/TDETools');
 %% Define system
 NPeriods = 1;
 T = 10000;
-alpha = 90+sqrt(2); % ratio of winding
-t = linspace(0, pi, T);
+alpha = 100+sqrt(2); % ratio of winding
+range = 4*pi;
+t = linspace(0, range, T);
 g = @(x) -pi/2*cos(x) + pi/2;
 %g =  @(x) cos(x);
 %g = @(x) min(2*pi - abs(mod(x,2*pi)),abs(mod(x,2*pi))); 
@@ -16,10 +17,14 @@ obs2 = .9;
 % f = min(g(alpha*t-obs1)+ g(t-obs2), g(alpha*t - obs1 + pi) + g(-t-obs2));
 f = min(g(alpha*t-obs1)+ g(t-obs2),g(alpha*t - obs1 + pi) + g(-t-obs2));
 %f = g(alpha*t-obs1)+ g(t-obs2);
+%f  = cos(alpha*t) + cos(t);
 %% observation function
 
-dim = 130;
-Tau = 3;
+dim = 120;
+% tau selection procedure (similar to in theorem 2.2 of jose's paper)
+% eta = floor(dim*abs(alpha - 1)/(2*max(alpha,1)));
+% numerical_tau = 2*pi* eta/(dim * abs(alpha-1))
+Tau = 4; %floor(numerical_tau *(T/range))
 dT = 1;
 
 %% dot product
@@ -27,7 +32,7 @@ dT = 1;
 SWf = getSlidingWindow(f, dim, Tau, dT);
 
 Y = getPCA(SWf);
-SWf = getGreedyPerm(SWf, 250);
+SWf = getGreedyPerm(SWf, 300);
 
 %% Compute PH of the embedding
 

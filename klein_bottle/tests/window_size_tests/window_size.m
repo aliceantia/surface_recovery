@@ -63,7 +63,7 @@ SW = getSlidingWindow(ts, dim, Tau, dT);
 Y = getPCA(SW);
 %% Distortion
 path = horzcat(mod(thetas, scale)', mod(phis, scale)');
-[SWd, Md] = getDistanceMatrix(path, SW, obsfn);
+[SWd, Md] = getDistanceMatrix(path, SW, dKleinL2);
 
 computeDistortion(Md,SWd)
 

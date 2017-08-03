@@ -1,4 +1,4 @@
-a = -0.1:0.05:1.2;
+a = 0:0.05:1.4;
 softMinApproxResults1 = cell(5, length(a));
 
 for ii=1:length(a)
