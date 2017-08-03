@@ -2,9 +2,10 @@ a = 0:0.1:5; %set parameter range
 
 data = cell(5, length(a));
 
+tau = 4;
 for ii=1:length(a)
    a(ii)
-   [ts, SWd, Md, IsSliding2, IsSliding3] = f_getData(a(ii));
+   [ts, SWd, Md, IsSliding2, IsSliding3] = f_getData(a(ii), tau);
    data{1, ii} = ts;
    data{2, ii} = SWd;
    data{3, ii} = Md;

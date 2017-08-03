@@ -10,7 +10,7 @@ addpath('../../../sw_distortion');
 scale = 2*pi; %scale is always 2 pi
 height = 1/2; %decrease for shallower angle. risky because ripser can't see the identification
 numPeriods = 50; %increase for shallower angle
-b = 50; %samller period size. increase for more points
+b = 100; %samller period size. increase for more points
 numIterations = numPeriods*b;
 
 thetas = linspace(0, scale*numPeriods, numIterations);
@@ -45,7 +45,7 @@ for ii=1:numIterations
     ts(ii) = g(mod(thetas(ii), scale), mod(phis(ii), scale));
 end
 
-dim = 2*b;
+dim = 100;
 Tau = tau;
 dT = 1;
 SW = getSlidingWindow(ts, dim, Tau, dT);

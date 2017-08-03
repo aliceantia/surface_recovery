@@ -1,4 +1,4 @@
-function [ts, SWd, Md, IsSliding2, IsSliding3] = f_getData(a)
+function [ts, SWd, Md, IsSliding2, IsSliding3] = f_getData(a, tau)
 %Idea as p -> infty min(a,b) = (a+b) - (a^p + b^p)^(1/p)
 p = 30;
 
@@ -81,7 +81,7 @@ for ii=1:numIterations
 end
 
 dim = 100;
-Tau = 4;
+Tau = tau;
 dT = 1;
 SW = getSlidingWindow(ts, dim, Tau, dT);
 
