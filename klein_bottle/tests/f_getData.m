@@ -13,9 +13,15 @@ numPeriods = 50; %increase for shallower angle
 b = 100; %samller period size. increase for more points
 numIterations = numPeriods*b;
 
-thetas = linspace(0, scale*numPeriods, numIterations);
-phis = linspace(0, scale*height, numIterations);
+%% define window size
+dim = 100;
+Tau = tau;
+dT = 1;
 
+thetas = linspace(0, scale*numPeriods + (numIterations/(scale*numPeriods)*Tau*dim),...
+    numIterations+ (Tau*dim));
+phis = linspace(0, scale*height + (numIterations/(scale*height)*Tau*dim), ...
+    numIterations + (Tau*dim));
 
 %% distance/some function on torus and klein
 %  L1
@@ -80,9 +86,6 @@ for ii=1:numIterations
     ts(ii) = g(mod(thetas(ii), scale), mod(phis(ii), scale));
 end
 
-dim = 100;
-Tau = tau;
-dT = 1;
 SW = getSlidingWindow(ts, dim, Tau, dT);
 
 %% Distortion
