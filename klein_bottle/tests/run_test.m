@@ -1,4 +1,4 @@
-a = 0:0.05:1.4; %set parameter range
+a = 0:0.1:5; %set parameter range
 
 data = cell(5, length(a));
 
