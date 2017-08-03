@@ -91,9 +91,7 @@ path = horzcat(mod(thetas, scale)', mod(phis, scale)');
 
 %% do TDA
 if useDiffusionMap
-    tic
     SW = getDiffusionMap(getSSM(SW), k);
-    toc
 end
 SW = getGreedyPerm(SW, 300);
 disp('Doing TDA (mod 2)...');
