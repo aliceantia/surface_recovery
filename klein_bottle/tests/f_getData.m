@@ -1,7 +1,8 @@
-function [ts, SWd, Md, IsSliding2, IsSliding3] = f_getData(a, tau)
+function [ts, path, IsSliding2, IsSliding3, dim, Tau, A] = f_getData(a, tau)
 %Idea as p -> infty min(a,b) = (a+b) - (a^p + b^p)^(1/p)
 p = 30;
 
+A = a;
 
 useDiffusionMap = false;
 k=20;
@@ -78,7 +79,7 @@ softMinApproxCos = @(p1, p2) (torusCos(p1, p2)*exp(-a*torusCos(p1, p2)) ...
     /(exp(-a*torusCos(p1, p2))...
     + exp(-a*torusCos(p1, [mod(p2(1)+scale/2, scale) mod(-p2(2), scale)])));
 
-%% observation function
+%% observation function (CHECK THIS HERE!!)
 obsfn = minL1; %choose a function
 
 
@@ -93,11 +94,8 @@ end
 
 SW = getSlidingWindow(ts, dim, Tau, dT);
 
-%% Distortion
+%% Save the path
 path = horzcat(mod(thetas, scale)', mod(phis, scale)');
-%[SWd, Md] = getDistanceMatrix(path, SW, minL2);
-
-[SWd, Md] = getDistanceMatrixMaxNorm(path, SW, minL2);
 
 %% do TDA
 if useDiffusionMap
