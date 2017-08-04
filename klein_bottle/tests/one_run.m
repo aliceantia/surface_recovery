@@ -12,7 +12,7 @@ dim = 2*b;
 Tau = 4;
 dT = 1;
 
-[ts, SWd, Md, IsSliding2, IsSliding3]=f_getData(a,15);
+[ts, SWd, Md, IsSliding2, IsSliding3]=f_getData(a,4);
 
 computeDistortion(Md,SWd)
 
@@ -22,7 +22,7 @@ Md = unrollDistMat(Md);
 SW = getSlidingWindow(ts, dim, Tau, dT);
 Y = getPCA(SW);
 %D = SWd./Md;
-
+clf;
 %make plots
 subplot(321);
 C = plotTimeColors(1:length(ts), ts, 'type', '2DLine');

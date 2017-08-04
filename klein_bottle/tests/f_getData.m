@@ -7,18 +7,22 @@ useDiffusionMap = false;
 k=20;
 
 
-greedyPermNumber = 400;
+greedyPermNumber = 300;
 %% Define trajectory
 scale = 2*pi; %scale is always 2 pi
 height = 1/2; %decrease for shallower angle. risky because ripser can't see the identification
 numPeriods = 50; %increase for shallower angle
-b = 100; %samller period size. increase for more points
+b = 50; %samller period size. increase for more points
 numIterations = numPeriods*b;
 
 %% define window size
 dim = 100;
 Tau = tau;
 dT = 1;
+
+%% observation point
+theta0 = 0.3*scale;
+phi0 = .3*height*scale;
 
 thetas = linspace(0, scale*numPeriods + scale*numPeriods*Tau*dim/numIterations,...
     numIterations+ (Tau*dim));
@@ -75,10 +79,9 @@ softMinApproxCos = @(p1, p2) (torusCos(p1, p2)*exp(-a*torusCos(p1, p2)) ...
     + exp(-a*torusCos(p1, [mod(p2(1)+scale/2, scale) mod(-p2(2), scale)])));
 
 %% observation function
-obsfn = softMinApproxCos; %choose a function
+obsfn = minL1; %choose a function
 
-theta0 = 0.3*scale;
-phi0 = 0.3*height*scale;
+
 
 g = @(theta, phi) obsfn([theta phi], [theta0 phi0]);
 
@@ -92,7 +95,9 @@ SW = getSlidingWindow(ts, dim, Tau, dT);
 
 %% Distortion
 path = horzcat(mod(thetas, scale)', mod(phis, scale)');
-[SWd, Md] = getDistanceMatrix(path, SW, minL2);
+%[SWd, Md] = getDistanceMatrix(path, SW, minL2);
+
+[SWd, Md] = getDistanceMatrixMaxNorm(path, SW, minL2);
 
 %% do TDA
 if useDiffusionMap
@@ -104,5 +109,4 @@ DSW = getSSM(SW);
 IsSliding2 = ripserDM(DSW, 2, 2);
 disp('Doing TDA (mod 3)...');
 IsSliding3 = ripserDM(DSW, 3, 2);
-
 end
